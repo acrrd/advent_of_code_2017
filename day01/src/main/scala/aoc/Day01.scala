@@ -14,23 +14,21 @@ object Day01 {
     captcha.map(_.asDigit)
   }
 
-  def solve_common(captcha: String)(genSecondList: Seq[Int] => Seq[Int]): Int = {
+  def solve_common(captcha: String)(getOffset: Seq[Int] => Int): Int = {
     val digits = parseCaptcha(captcha)
-    digits.zip(genSecondList(digits)).filter({ case (a, b) => a == b }).foldLeft(0)((acc, p) => acc + p._1)
+    val offset = getOffset(digits)
+    digits.zip(digits.drop(offset) ++ digits.take(offset)).filter({ case (a, b) => a == b }).foldLeft(0)((acc, p) => acc + p._1)
   }
 
   object Part1 {
     def solve(captcha: String): Int = {
-      solve_common(captcha)(digits => digits.tail ++ List(digits(0)))
+      solve_common(captcha)(_ => 1)
     }
   }
 
   object Part2 {
     def solve(captcha: String): Int = {
-      solve_common(captcha){ digits =>
-        val middle = digits.length/2
-        digits.drop(middle) ++ digits.take(middle)
-      }
+      solve_common(captcha)(digits => digits.length/2)
     }
   }
 }
