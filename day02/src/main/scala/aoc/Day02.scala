@@ -5,8 +5,7 @@ import scala.io.Source
 object Day02 {
   def main(args: Array[String]): Unit = {
     val spreadsheet = Source.stdin.mkString
-
-    print(spreadsheet)
+    
     println(Part1.checksum(spreadsheet))
   }
 
@@ -18,9 +17,9 @@ object Day02 {
   object Part1 {
     def checksum(spreadsheet: String): Int = {
       parseSpreadsheet(spreadsheet).map(vs => {
-        println(vs.max, vs.min, vs.max - vs.min)
         vs.max - vs.min
       }).sum
     }
   }
+
 }
