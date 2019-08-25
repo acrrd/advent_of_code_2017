@@ -1,7 +1,6 @@
 package aoc
 
-import scala.io.Source
-import scala.math.sqrt;
+import scala.collection.mutable.Map;
 
 sealed trait Direction
 case object Right extends Direction {}
@@ -14,8 +13,10 @@ object Day03 {
     val n = scala.io.StdIn.readInt()
 
     val steps = Part1.stepsForData(n)
+    val firstLarger = Part2.firstLarger(n)
 
     println(steps)
+    println(firstLarger)
   }
 
   def ulamSpiralDirections: Stream [Direction] = {
@@ -44,6 +45,25 @@ object Day03 {
       val (x, y) = ulamSpiralCoordinates.take(n).last
 
       Math.abs(x) + Math.abs(y)
+    }
+  }
+
+  object Part2 {
+    def adjSumSpiral: Stream[Int] = {
+      var sums = Map[(Int, Int), Int]()
+      sums += (0, 0) -> 1
+      val neighborOffset = List((1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1), (0, 1), (1, 1))
+
+      1 #::
+        ulamSpiralCoordinates.tail.map(coord => {
+          val sum = neighborOffset.flatMap(offset => sums.get((coord._1 + offset._1, coord._2 + offset._2))).sum
+          sums += coord -> sum
+          sum
+        })
+    }
+
+    def firstLarger(n: Int): Int = {
+      adjSumSpiral.find(sum => sum > n).get
     }
   }
 }
